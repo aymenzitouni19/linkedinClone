@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Create as CreateIcon,
   Image as ImageIcon,
@@ -8,7 +8,9 @@ import {
 } from "@material-ui/icons";
 import "./Feed.css";
 import InputOption from "./InputOption";
+import Post from "./Post";
 function Feed() {
+  const [posts, setPosts] = useState([]);
   return (
     <div className="feed">
       <div className="feed__inputContainer">
@@ -31,6 +33,15 @@ function Feed() {
         </div>
       </div>
       {/* Posts */}
+      {posts.map((post, index) => (
+        <Post
+          key={index}
+          name="Aymen zitouni"
+          description="hahahahahaha"
+          message="hahahaha"
+          photoUrl="/img.jpg"
+        />
+      ))}
     </div>
   );
 }
