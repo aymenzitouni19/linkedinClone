@@ -5,6 +5,7 @@ import {
   Subscriptions as SubscriptionsIcon,
   EventNote as EventNoteIcon,
   CalendarViewDay as CalendarViewDayIcon,
+  SettingsInputAntenna,
 } from "@material-ui/icons";
 import "./Feed.css";
 import InputOption from "./InputOption";
@@ -13,22 +14,25 @@ import { db } from "./firebase";
 import firebase from "firebase";
 function Feed() {
   const [posts, setPosts] = useState([]);
+  const [input, setInput] = useState("");
   useEffect(() => {
-    db.collection("posts").onSnapshot((snapshot) =>
-      setPosts(
-        snapshot.docs.map((doc) => ({
-          id: doc.id,
-          data: doc.data(),
-        }))
-      )
-    );
+    db.collection("posts")
+      .orderBy("timestamp", "desc")
+      .onSnapshot((snapshot) =>
+        setPosts(
+          snapshot.docs.map((doc) => ({
+            id: doc.id,
+            data: doc.data(),
+          }))
+        )
+      );
   }, []);
   const sendPost = (e) => {
     e.preventDefault();
     db.collection("posts").add({
       name: "aymen",
       description: "this is a test",
-      message: "hehehhehehehehehehehehheheheheheheheh",
+      message: input,
       photoUrl: "",
       timestamp: firebase.firestore.FieldValue.serverTimestamp(),
     });
@@ -39,7 +43,11 @@ function Feed() {
         <div className="feed__input">
           <CreateIcon />
           <form>
-            <input type="text" />
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+            />
             <button onClick={sendPost} type="submit">
               Sendd
             </button>
@@ -57,13 +65,13 @@ function Feed() {
         </div>
       </div>
       {/* Posts */}
-      {posts.map((post, index) => (
+      {posts.map(({ id, data: { name, description, message, photoUrl } }) => (
         <Post
-          key={index}
-          name="Aymen zitouni"
-          description="hahahahahaha"
-          message="hahahaha"
-          photoUrl="/img.jpg"
+          key={id}
+          name={name}
+          description={description}
+          message={message}
+          photoUrl={photoUrl && "img.jpg"}
         />
       ))}
     </div>

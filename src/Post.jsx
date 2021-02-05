@@ -9,20 +9,18 @@ import {
 import InputOption from "./InputOption";
 import "./Post.css";
 
-function Post({ name, description, message, photUrl }) {
+function Post({ name, description, message, photoUrl }) {
   return (
     <div className="post">
       <div className="post__header">
-        <Avatar src="https://cdn.iconscout.com/icon/free/png-256/avatar-370-456322.png" />
+        <Avatar src={photoUrl == "" ? "img.jpg" : photoUrl} />
         <div className="post__info">
-          <h2>Aymen Zitouni</h2>
-          <p>Full stack web developer at AIESEC</p>
+          <h2>{name}</h2>
+          <p>{description}</p>
         </div>
       </div>
       <div className="post__body">
-        <p>
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Neque, sit.
-        </p>
+        <p>{message} </p>
       </div>
       <div className="post__buttons">
         <InputOption Icon={ThumbUpAltOutlinedIcon} title="Like" color="gray" />
