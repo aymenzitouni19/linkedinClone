@@ -1,13 +1,39 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { login } from "./features/userSlice";
+import { auth } from "./firebase";
 import "./Login.css";
 
 function Login() {
+  const dispatch = useDispatch();
   const [name, setName] = useState("");
   const [photoUrl, setPhotoUrl] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const loginToApp = () => {};
-  const register = () => {};
+  const loginToApp = (e) => {
+    e.preventDefaualt();
+  };
+  const register = () => {
+    if (!name) {
+      return alert("please fill all the inputs");
+    }
+    auth.createUserWithEmailAndPassword(email, password).then((userAuth) =>
+      userAuth.user
+        .updateProfile({ displayName: name, photoURL: photoUrl })
+        .then(() =>
+          dispatch(
+            login({
+              email: userAuth.user.email,
+              displayName: name,
+              photoUrl: photoUrl,
+              uid: userAuth.user.uid,
+            })
+          )
+        )
+        .catch((err) => alert(err.message))
+    );
+    alert("successs");
+  };
   return (
     <div className="login">
       <img
@@ -39,12 +65,15 @@ function Login() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <button type="submit" onClick={loginToApp}>
+        <button type="submit" onClick={register}>
           Sign-in
         </button>
       </form>
       <p>
-        Not a member ? <span className="login__register">Register now</span>
+        Not a member ?{" "}
+        <span className="login__register" onClick={register}>
+          Register now
+        </span>
       </p>
     </div>
   );
